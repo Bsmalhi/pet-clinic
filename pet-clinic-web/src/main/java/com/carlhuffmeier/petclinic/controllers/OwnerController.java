@@ -1,9 +1,16 @@
 package com.carlhuffmeier.petclinic.controllers;
 
+import com.carlhuffmeier.petclinic.models.Owner;
 import com.carlhuffmeier.petclinic.services.OwnerService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Optional;
 
 @RequestMapping("/owners")
 @Controller
@@ -21,8 +28,14 @@ public class OwnerController {
         return "owners/index";
     }
 
-    @RequestMapping({"/find"})
-    public String findOwners() {
-        return "notimplemented";
+    @RequestMapping({"/find/${lastName}"})
+    public String findOwners(@PathVariable String lastName, Model model) {
+        Owner owner = ownerService.findByLastName(lastName);
+        Optional<Owner> ownerOptional = Optional.of(owner);
+        if(ownerOptional.isPresent()){
+            model.addAttribute("owners", new ArrayList<>(Arrays.asList(owner)));
+        }
+//        return "notimplemented";
+        return "owners/ownerInfo";
     }
 }
